@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cp $1 temp.tex
+platex temp.tex && \
+  dvipdfmx temp.dvi && \
+  open -a Preview temp.pdf
+rm temp.log temp.dvi temp.aux temp.tex
