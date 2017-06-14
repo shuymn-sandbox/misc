@@ -1,0 +1,23 @@
+#!/bin/sh
+
+f_full="$1"
+f_name="${f_full%.*}"
+
+if [ ! -z $1 ] && [ -z $2 ]; then
+  if [ ! -f "temp.c" ]; then
+    cp $1 temp.c
+    gcc temp.c -o $f_name.out
+
+    case $? in
+      0 ) rm temp.c && exit 0 ;;
+      1 ) rm temp.c && exit 1 ;;
+      * ) exit 2 ;;
+    esac
+  else
+    echo "Error: temp.c already exists." 1>&2
+    exit 1
+  fi
+else
+  echo "Error: invalid assignment." 1>&2
+  exit 1
+fi
