@@ -15,7 +15,7 @@ fi
 [[ "$1" != *.c ]] && error "Error: invalid filetype."
 [ -f "temp.c" ] && error "Error: temp.c already exists."
 
-cp $f_full temp.c && gcc temp.c -o $f_name.out
+cp ${f_full} temp.c && gcc temp.c -o ${f_name}.out
 
 case "$?" in
   0 ) rm temp.c && exit 0 ;;
