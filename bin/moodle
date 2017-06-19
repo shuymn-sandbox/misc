@@ -1,0 +1,26 @@
+#!/bin/sh
+
+f_full="$1"
+f_name="${f_full%.*}"
+
+function error() {
+  echo "$@" 1>&2
+  exit 1
+}
+
+if [ -z "$1" ] || [ ! -z "$2" ]; then
+  error "Error: invalid assignment."
+fi
+
+[[ "$1" != *.md ]] && error "Error: invalid filetype."
+[ -f "temp.md" ] && error "Error: temp.md already exists."
+
+cp ${f_full} temp.md && \
+  pandoc temp.md -o temp.html && \
+  sed -e 's/<code>//g' -e 's/<\/code>//g' -e 's/，/,/g' -e 's/．/./g' temp.html > ${f_name}.html
+
+case "$?" in
+  0 ) rm temp.md temp.html && exit 0 ;;
+  1 ) rm temp.md temp.html && exit 1 ;;
+  * ) exit 2 ;;
+esac
