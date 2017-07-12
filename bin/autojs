@@ -1,0 +1,24 @@
+#!/bin/sh
+
+f_full="$1"
+f_name="${f_full%.*}"
+
+function error() {
+  echo "$@" 1>&2
+  exit 1
+}
+
+if [ -z "$1" ] || [ ! -z "$2" ]; then
+  error "Error: invalid assignment."
+fi
+
+[[ "$1" != *.js ]] && error "Error: invalid filetype."
+[ ! -f "autojs.html" ] && error "Error: autojs.html doesn't exists."
+
+cp ${f_full} temp.js && \
+  open -a "Google Chrome.app" autojs.html
+
+case "$?" in
+  0 ) exit 0 ;;
+  1 ) exit 1 ;;
+esac
