@@ -17,7 +17,7 @@ fi
 
 cp ${f_full} temp.md && \
   pandoc temp.md -o temp.html && \
-  sed -e 's/<code>//g' -e 's/<\/code>//g' -e 's/，/,/g' -e 's/．/./g' temp.html > ${f_name}.html
+  sed -e 's/<code>//g' -e 's/<\/code>//g' -e 's/，/,/g' -e 's/．/./g' -e 's/ id=\".*\"//g' temp.html > ${f_name}.html
 
 case "$?" in
   0 ) rm temp.md temp.html && exit 0 ;;
