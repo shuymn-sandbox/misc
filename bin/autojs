@@ -1,34 +1,28 @@
 #!/bin/sh
 
 f_full="$1"
+count=`ps -ef | grep chrome | grep -v grep | wc -l`
 
 function error() {
-  case $@ in
-    0)
-      echo "Error: invalid assignment." 1>&2
-      exit 1
-      ;;
-    1)
-      echo "Error: invalid filetype." 1>&2
-      exit 1
-      ;;
-    2)
-      echo "Error: autojs.html doesn't exists." 1>&2
-      exit 1
-      ;;
-    *)
-      echo "meow..." 1>&2
-      exit 1
-      ;;
+  case $1 in
+    0) echo "Error: invalid assignment." 1>&2 && exit 1 ;;
+    1) echo "Error: invalid filetype." 1>&2 && exit 1 ;;
+    2) echo "Error: autojs.html doesn't exists." 1>&2 && exit 1 ;;
+    *) echo "meow..." 1>&2 && exit 1 ;;
   esac
 }
 
 function run() {
   if [ -f "autojs.html" ]; then
-    cp ${f_full} temp.js && open -a "Google Chrome.app" autojs.html
+    cp ${f_full} temp.js
+    [ $1 == 0 ] && open -a "Google Chrome.app" autojs.html
   elif [ -f "../autojs.html" ]; then
-    cp ${f_full} ../temp.js && open -a "Google Chrome.app" ../autojs.html
-  else
+    cp ${f_full} ../temp.js
+    [ $1 == 0 ] && open -a "Google Chrome.app" ../autojs.html
+  elif [ -f "../../autojs.html" ]; then
+    cp ${f_full} ../../temp.js
+    [ $1 == 0 ] && open -a "Google Chrome.app" ../../autojs.html
+  else 
     error 2
   fi
 }
@@ -38,6 +32,6 @@ if [ -z "$1" ] || [ ! -z "$2" ]; then
 elif [[ "$1" != *.js ]]; then 
   error 1
 else
-  run
+  run ${count}
 fi
 
