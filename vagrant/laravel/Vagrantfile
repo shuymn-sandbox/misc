@@ -1,0 +1,20 @@
+# 必要なプラグインがインストールされてるか
+unless Vagrant.has_plugin?("vagrant-vbguest")
+  raise "please run 'vagrant plugin install vagrant-vbguest'"
+end
+
+Vagrant.configure("2") do |config|
+  # CentOS 7 の box を指定
+  config.vm.box = "centos/7"
+  # ゲストマシンのIPアドレスを指定
+  config.vm.network "private_network", ip: "192.168.33.10"
+  # ゲストとホストで共有するフォルダの設定
+  config.vm.synced_folder "./share", "/vagrant"
+  # VMの細かい設定
+  config.vm.provider "virtualbox" do |vb|
+    vb.cpus = "1"
+    vb.memory = "1024"
+  end
+  # プロビジョニング処理を別ファイルにまとめているのでそれを読み込ませる
+  config.vm.provision :shell, :path => "prov.sh"
+end
