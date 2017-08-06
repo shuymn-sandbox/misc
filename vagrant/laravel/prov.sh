@@ -28,7 +28,9 @@ echo 'Installing ...'
 yum --enablerepo=epel install nginx -y 1>/dev/null
 
 echo '[2.2] Change directory owner for nginx'
-mkdir -p /var/www && chown nginx:nginx /var/www
+mkdir -p /var/www
+chown nginx:nginx /var/www
+chmod o+w -R /var/www
 
 echo '[2.3] Create phpinfo.php'
 echo '<?php phpinfo();' >> /var/www/phpinfo.php && chown nginx:nginx /var/www/phpinfo.php
