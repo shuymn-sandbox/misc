@@ -23,6 +23,16 @@ composer create-project --prefer-dist laravel/laravel blog
 # 以下のディレクトリをnginxから書き込み可能にする
 chown o+w -R /var/www/blog/storage
 chown o+w -R /var/www/blog/bootstrap/cache
+# laravel という名前のdatabaseをつくる
+mysql -uroot -e "create database laravel;"
+# laravelのmysqlへの接続のために.env ファイルを修正する
+vim /var/www/blog/.env
+-DB_DATABASE=homestead
+-DB_USERNAME=homestead
+-DB_PASSWORD=secret
++DB_DATABASE=laravel
++DB_USERNAME=root
++DB_PASSWORD=
 ```
 
 # ハマりどころ
