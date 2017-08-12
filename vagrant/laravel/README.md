@@ -19,14 +19,14 @@ laravelのインストール
 # インストールするディレクトリに移動
 cd /var/www
 # /var/www/laravel というディレクトリにlaravelがインストールされる
-composer create-project --prefer-dist laravel/laravel laravel
+composer create-project laravel/laravel --prefer-dist laravel
 # 以下のディレクトリをnginxから書き込み可能にする
-chmod o+w -R /var/www/blog/storage
-chmod o+w -R /var/www/blog/bootstrap/cache
+chmod o+w -R /var/www/laravel/storage
+chmod o+w -R /var/www/laravel/bootstrap/cache
 # laravel という名前のdatabaseをつくる
 mysql -uroot -e "create database laravel;"
 # laravelのmysqlへの接続のために.env ファイルを修正する
-vim /var/www/blog/.env
+vim /var/www/laravel/.env
 -DB_DATABASE=homestead
 -DB_USERNAME=homestead
 -DB_PASSWORD=secret
