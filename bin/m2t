@@ -60,6 +60,10 @@ final class Main
   public function execute(): void
   {
     // 闇のコードの始まり。実行したいOSのコマンドを順に書く
+    // sedコマンドで置き換えるもの
+    // 全角のカンマとコンマ -> 半角にする
+    // vscodeで日本語打ってると混入する制御文字^H -> 消す
+    // pandocで変換するとついてくる\label{hogehoge}という文字列 -> 消す
     $commands = [
       "cp ./{$this->f_full} ./temp.md",
       "pandoc ./temp.md -o ./temp.tex",
