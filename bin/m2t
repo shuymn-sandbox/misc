@@ -11,6 +11,7 @@ final class Main
   private $f_full;
   private $f_name;
 
+  // 必要なものがあるか確認
   public function valid(array $argv): bool
   {
     try {
@@ -33,6 +34,7 @@ final class Main
     }
   }
 
+  // 必要なものをプロパティへセット
   public function setProps(array $argv): Main
   {
     $this->f_full = $argv[1];
@@ -40,6 +42,7 @@ final class Main
     return $this;
   }
 
+  // ただ分割してtex上で\inputするだけじゃpackageとかの関係でダメなので、合成する
   public function genReport(): bool
   {
     $template = file_get_contents(self::TEX_TEMPLATE);
@@ -57,6 +60,8 @@ final class Main
     return file_put_contents('report.tex', $report, LOCK_EX) ? true : false;
   }
 
+  // 処理の主な部分
+  // 例外処理は呼び出し元のrunメソッドに投げつける
   public function execute(): void
   {
     // 闇のコードの始まり。実行したいOSのコマンドを順に書く
@@ -94,6 +99,7 @@ final class Main
     }
   }
 
+  // 実際に実行するときはこれを呼び出す
   public static function run(array $argv): void
   {
     $instance = new static;
