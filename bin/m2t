@@ -1,0 +1,125 @@
+#!/Users/shuymn/.anyenv/envs/phpenv/shims/php
+<?php
+
+// require: macOS, php 7.1 or later, pandoc, platex, dvipdfmx
+
+final class Main
+{
+  private const TEX_TEMPLATE = __DIR__ . '/../res/template.tex';
+  private $f_full;
+  private $f_name;
+
+  public function valid(array $argv): bool
+  {
+    try {
+      if (!isset($argv[1])) {
+        throw new \RuntimeException('Invalid argument.');
+      }
+
+      if (preg_match('/\.md$/', $argv[1]) === 0) {
+        throw new \RuntimeException('Invalid filetype. Expected markdown file.');
+      }
+
+      if (!file_exists(self::TEX_TEMPLATE)) {
+        throw new \RuntimeException(self::TEX_TEMPLATE);
+      }
+
+      return true;
+    } catch (\RuntimeException $e) {
+      echo "Error: {$e->getMessage()}\n";
+      return false;
+    }
+  }
+
+  public function setProps(array $argv): Main
+  {
+    $this->f_full = $argv[1];
+    $this->f_name = str_replace('.md', '', $argv[1]);
+    return $this;
+  }
+
+  public function genReport(): bool
+  {
+    $template = file_get_contents(self::TEX_TEMPLATE);
+    if ($template === null) {
+      throw new \RuntimeException(self::TEX_TEMPLATE);
+    }
+
+    $content = file_get_contents("./{$this->f_name}.tex");
+    if ($content === null) {
+      throw new \RuntimeException("./{$this->f_name}.tex not found.");
+    }
+
+    $report = str_replace('\\input{content}', $content, $template);
+
+    return file_put_contents('report.tex', $report, LOCK_EX) ? true : false;
+  }
+
+  public function execute(): void
+  {
+    // 闇のコードの始まり。実行したいOSのコマンドを順に書く
+    $commands = [
+      "cp ./{$this->f_full} ./temp.md",
+      "pandoc ./temp.md -o ./temp.tex",
+      "sed -e 's/，/,/g' -e 's/．/./g' -e 's///g' -e 's/\\\\label{.*}//g' ./temp.tex > ./{$this->f_name}.tex",
+      "cp report.tex temp.tex",
+      "platex temp.tex",
+      "dvipdfmx temp.dvi",
+      "cp temp.pdf report.pdf",
+      "open -a Preview report.pdf",
+    ];
+
+    try {
+      foreach ($commands as $key => $command) {
+        exec($command . ' 2>&1', $stderr, $return);
+
+        if ($return !== 0) {
+          throw new \RuntimeException($stderr);
+        }
+
+        // cliの処理の間にphpの処理を割り込ませる
+        // sed でtexファイルをいい感じにした後、template.texと合成する
+        if ($key === 2 && !$this->genReport()) {
+          throw new \RuntimeException('Failed to generate report.tex.');
+        }
+      }
+    } catch (\RuntimeException $e) {
+      throw $e;
+    }
+  }
+
+  public static function run(array $argv): void
+  {
+    $instance = new static;
+
+    if (!$instance->valid($argv)) {
+      return;
+    }
+
+    try {
+      $instance->setProps($argv)->execute();
+    } catch (\RuntimeException $e) {
+      echo "Error: {$e->getMessage()}\n";
+    } finally {
+      // いらないファイルがあったら消す
+      $files = [
+        'temp.md',
+        'temp.tex',
+        'temp.pdf',
+        'temp.out',
+        'temp.log',
+        'temp.dvi',
+        'temp.aux',
+      ];
+
+      foreach ($files as $file) {
+        if (file_exists("./{$file}")) {
+          exec("rm ./{$file}");
+        }
+      }
+    }
+  }
+}
+
+// fire
+Main::run($argv);
