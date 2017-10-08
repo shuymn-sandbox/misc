@@ -1,6 +1,7 @@
 #!/Users/shuymn/.anyenv/envs/phpenv/shims/php
 <?php
 
+// m2t: markdown to tex (to pdf) convert script
 // require: macOS, php 7.1 or later, pandoc, platex, dvipdfmx
 // note: 一番上の行は自分の環境に合ったphpへのpathに書き換えてください
 
