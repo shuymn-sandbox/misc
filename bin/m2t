@@ -2,6 +2,7 @@
 <?php
 
 // require: macOS, php 7.1 or later, pandoc, platex, dvipdfmx
+// note: 一番上の行は自分の環境に合ったphpへのpathに書き換えてください
 
 final class Main
 {
