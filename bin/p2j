@@ -1,0 +1,24 @@
+#!/bin/sh
+
+f_full="$1"
+f_name="${f_full%.*}"
+
+function error() {
+  echo "$@" 1>&2
+  exit 1
+}
+
+if [ -z "$1" ] || [ ! -z "$2" ]; then
+  error "Error: invalid assignment."
+fi
+
+[[ "$1" != *.png ]] && error "Error: invalid filetype."
+[ -f "temp.png" ] && error "Error: temp.png already exists."
+
+cp "${f_full}" temp.png && convert temp.png -quality 100 "${f_name}".jpg
+
+case "$?" in
+  0 ) rm temp.png && exit 0 ;;
+  1 ) rm temp.png && exit 1 ;;
+  * ) exit 2 ;;
+esac
