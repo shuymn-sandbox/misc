@@ -33,7 +33,7 @@ chown nginx:nginx /var/www
 chmod o+w -R /var/www
 
 echo '[2.3] Create phpinfo.php'
-echo '<?php phpinfo();' >> /var/www/phpinfo.php && chown nginx:nginx /var/www/phpinfo.php
+echo '<?php phpinfo();' >> /var/www/index.php && chown nginx:nginx /var/www/index.php
 
 echo '[2.4] Add nginx config (local.dev.conf)'
 cat << EOT > /etc/nginx/conf.d/local.dev.conf
@@ -59,7 +59,10 @@ server {
 }
 EOT
 
-echo '[2.5] Start nginx and set autostart'
+echo '[2.5] Fix folder sync bug between virtualbox and nginx'
+sed -i.bak 's/sendfile\s\+on/sendfile off/g' /etc/nginx/nginx.conf
+
+echo '[2.6] Start nginx and set autostart'
 systemctl enable nginx 1>/dev/null 2>/dev/null
 systemctl start nginx
 systemctl status nginx | grep --color=never Active

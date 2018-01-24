@@ -1,7 +1,13 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
 # 必要なプラグインがインストールされてるか
-unless Vagrant.has_plugin?("vagrant-vbguest")
-  raise "please run 'vagrant plugin install vagrant-vbguest'"
+def check_plugin(plugin)
+  raise "please run 'vagrant plugin install #{plugin}'" unless Vagrant.has_plugin?("#{plugin}")
 end
+
+check_plugin(vagrant-vbguest)
+check_plugin(vagrant-cachier)
 
 Vagrant.configure("2") do |config|
   # CentOS 7 の box を指定
@@ -14,6 +20,10 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.cpus = "1"
     vb.memory = "1024"
+  end
+  # vagrant-cachierがあるなら有効化
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
   end
   # プロビジョニング処理を別ファイルにまとめているのでそれを読み込ませる
   config.vm.provision :shell, :path => "prov.sh"
