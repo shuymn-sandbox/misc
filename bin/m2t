@@ -72,7 +72,7 @@ final class Main
     $commands = [
       "cp ./{$this->f_full} ./temp.md",
       "pandoc ./temp.md -o ./temp.tex",
-      "sed -e 's/，/,/g' -e 's/．/./g' -e 's///g' -e 's/\\\\label{.*}//g' ./temp.tex > ./{$this->f_name}.tex",
+      "sed -e 's/，/,/g' -e 's/．/./g' -e 's///g' -e 's///g' -e 's/\\\\label{.*}//g' ./temp.tex > ./{$this->f_name}.tex",
       "cp report.tex temp.tex",
       "platex temp.tex",
       "dvipdfmx temp.dvi",
